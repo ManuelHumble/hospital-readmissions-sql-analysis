@@ -140,7 +140,7 @@ GROUP BY patient_nbr
 HAVING COUNT(*) >1
 ORDER BY encounter_count DESC
 
----PAatients with just one visit
+---Patients with just one visit
 
 SELECT 
 		DISTINCT(patient_nbr),
@@ -149,7 +149,7 @@ FROM diabetic_data_raw
 GROUP BY patient_nbr
 HAVING COUNT(encounter_id) <2
 
---Determining every unique patient and there first encounter, then create a table with this information
+--Determining every unique patient and their first encounter, then create a table with this information
 
 SELECT t.*
 INTO diabetic_data_depue
@@ -176,7 +176,7 @@ FROM diabetic_data_depue;
 SELECT *
 FROM IDS_mapping_raw
 
----These Conditions that could possibly affect patients readmission
+---Conditions that could affect patients' readmission
 SELECT *
 FROM IDS_mapping_raw
 where column2 like '%hospice%' or column2 like '%expired%' or column2 like '%deceased';
@@ -189,7 +189,7 @@ WHERE discharge_disposition_id in (11,13,14,19,20,21,26)
 GROUP BY discharge_disposition_id
 ORDER BY ecounter_count DESC
 
---Delete non readmitable patients from depue record 
+--Delete non-readmitable patients from depue record 
 DELETE FROM diabetic_data_depue
 WHERE discharge_disposition_id in (11,13,14,19,20,21,26)
 
@@ -202,7 +202,7 @@ WHERE discharge_disposition_id in (11,13,14,19,20,21,26);
 ALTER TABLE diabetic_data_depue
 ADD  age_midpoint int
 
---Imputing valuse into they midage colunm
+--Imputing values into the midage column
 UPDATE diabetic_data_depue
  SET age_midpoint = CASE
 	WHEN age = '[0-10)'   THEN 5
@@ -235,7 +235,7 @@ FROM diabetic_data_depue
 GROUP BY age,age_midpoint
 ORDER BY age ;
 
---READMISION BY DESCRIPTION (ie addmission type)
+--READMISSION BY DESCRIPTION (i.e. admission type)
 --JOIN THIS TABLE TO ADMISSION TYPE
 SELECT ATM.description AS admission_type,
 	   COUNT(*) AS total_encounters,
