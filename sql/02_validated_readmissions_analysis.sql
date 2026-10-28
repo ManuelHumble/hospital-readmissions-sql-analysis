@@ -53,3 +53,31 @@ SELECT
     SUM(CASE WHEN encounter_id IS NULL THEN 1 ELSE 0 END)
         AS missing_encounter_id
 FROM dbo.diabetic_data_raw;
+--------------------------------------------
+
+-- 5. Missing-value assessment for selected columns
+SELECT
+    COUNT(*) AS total_records,
+
+    SUM(CASE WHEN race = '?' OR race IS NULL
+        THEN 1 ELSE 0 END) AS missing_race,
+
+    SUM(CASE WHEN weight = '?' OR weight IS NULL
+        THEN 1 ELSE 0 END) AS missing_weight,
+
+    SUM(CASE WHEN payer_code = '?' OR payer_code IS NULL
+        THEN 1 ELSE 0 END) AS missing_payer_code,
+
+    SUM(CASE WHEN medical_specialty = '?' OR medical_specialty IS NULL
+        THEN 1 ELSE 0 END) AS missing_medical_specialty,
+
+    SUM(CASE WHEN diag_1 = '?' OR diag_1 IS NULL
+        THEN 1 ELSE 0 END) AS missing_diag_1,
+
+    SUM(CASE WHEN diag_2 = '?' OR diag_2 IS NULL
+        THEN 1 ELSE 0 END) AS missing_diag_2,
+
+    SUM(CASE WHEN diag_3 = '?' OR diag_3 IS NULL
+        THEN 1 ELSE 0 END) AS missing_diag_3
+
+FROM dbo.diabetic_data_raw;
