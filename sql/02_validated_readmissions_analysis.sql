@@ -81,3 +81,67 @@ SELECT
         THEN 1 ELSE 0 END) AS missing_diag_3
 
 FROM dbo.diabetic_data_raw;
+-- 6. Check admission type mapping
+SELECT
+    admission_type_id,
+    COUNT(*) AS mapping_count
+FROM dbo.admission_type_map
+GROUP BY admission_type_id
+HAVING COUNT(*) > 1;
+
+-- 7. Check admission source mapping
+SELECT
+    admission_source_id,
+    COUNT(*) AS mapping_count
+FROM dbo.Admission_source_map
+GROUP BY admission_source_id
+HAVING COUNT(*) > 1;
+
+-- 8. Check discharge disposition mapping
+SELECT
+    discharge_disposition_id,
+    COUNT(*) AS mapping_count
+FROM dbo.Discharge_disposition_map
+GROUP BY discharge_disposition_id
+HAVING COUNT(*) > 1;
+
+-- 9. Find admission types without a mapping
+SELECT DISTINCT
+    d.admission_type_id
+FROM dbo.diabetic_data_raw AS d
+LEFT JOIN dbo.admission_type_map AS m
+    ON d.admission_type_id = m.admission_type_id
+WHERE m.admission_type_id IS NULL;
+
+-- 10. Find admission sources without a mapping
+SELECT DISTINCT
+    d.admission_source_id
+FROM dbo.diabetic_data_raw AS d
+LEFT JOIN dbo.Admission_source_map AS m
+    ON d.admission_source_id = m.admission_source_id
+WHERE m.admission_source_id IS NULL;
+
+-- 11. Find discharge dispositions without a mapping
+SELECT DISTINCT
+    d.discharge_disposition_id
+FROM dbo.diabetic_data_raw AS d
+LEFT JOIN dbo.Discharge_disposition_map AS m
+    ON d.discharge_disposition_id = m.discharge_disposition_id
+WHERE m.discharge_disposition_id IS NULL;
+
+-- 12. Validate the patient-level dataset
+SELECT
+    COUNT(*) AS total_patient_level_records,
+    COUNT(DISTINCT patient_nbr) AS distinct_patients,
+    COUNT(*) - COUNT(DISTINCT patient_nbr)
+        AS excess_records_over_distinct_patients
+FROM dbo.diabetic_data_depue;
+
+-- 13. Identify patients with multiple records
+SELECT
+    patient_nbr,
+    COUNT(*) AS record_count
+FROM dbo.diabetic_data_depue
+GROUP BY patient_nbr
+HAVING COUNT(*) > 1;
+
